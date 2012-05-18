@@ -1,0 +1,10 @@
+{
+  "port" : 4100,
+  "staticFiles" : "/static",
+  "viewFiles" : "/views",
+  "mysql" : {
+    "user" : "user",
+    "password" : "password",
+    "database" : "dbname"
+  }
+}
