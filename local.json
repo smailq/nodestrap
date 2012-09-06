@@ -1,0 +1,5 @@
+{
+  "port" : 4100,
+  "cookie_secret" : "change me now",
+  "session_secret" : "change moi"
+}
