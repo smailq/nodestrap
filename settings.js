@@ -7,13 +7,14 @@ var stylus = require('stylus');
  * @param winston - the logger
  */
 module.exports = function(app, express, nconf, winston) {
+
   app.configure(function(){
 
     // Set html as default extension
     app.set('view engine', 'html');
 
     // Use ./views/layout.html as the root of all views
-    app.set('layout', 'layout');
+    app.set('layout', 'global/layout');
 
     // Partials for layout
     app.set('partials', {
@@ -115,6 +116,27 @@ module.exports = function(app, express, nconf, winston) {
   });
 
   app.configure('development', function() {
+
+    // logger for dev
+    winston.loggers.add('access', {});
+
+    var winston_access = winston.loggers.get('access');
+    // enable web server logging; pipe those log messages through winston
+    var winstonStream = {
+      write: function(message, encoding){
+          // get rid of newline char
+          winston_access.info(message.slice(0,-1));
+      }
+    };
+
+    // log
+    app.use(express.logger({
+      format: 'dev',
+      immediate: true,
+      stream: winstonStream
+    }));
+
+    // handle error
     app.use(express.errorHandler({
       dumpExceptions: true,
       showStack: true
@@ -122,7 +144,34 @@ module.exports = function(app, express, nconf, winston) {
   });
 
   app.configure('production', function() {
+
+    // setup access logs
+    winston.loggers.add('access', {
+      file: {
+        filename: './logs/access.log',
+        json: false,
+        maxsize: 67108864
+      }
+    });
+
+    var winston_access = winston.loggers.get('access');
+    winston_access.remove(winston.transports.Console);
+
+    // enable web server logging; pipe those log messages through winston
+    var winstonStream = {
+      write: function(message, encoding){
+          // get rid of newline char
+          winston_access.info(message.slice(0,-1));
+      }
+    };
+
+    // log
+    app.use(express.logger({
+      format: ':remote-addr - - [:date] ":method :url HTTP/:http-version" :status :res[content-length] ":referrer" ":user-agent" :response-time',
+      stream: winstonStream
+    }));
+
+    // handle error
     app.use(express.errorHandler());
-    app.set('napkin', 0);
   });
 };

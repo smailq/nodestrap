@@ -1,3 +1,5 @@
+var utils = require('../lib/utils');
+
 /**
  * @param app - the express application
  * @param nconf - the configuration settings
@@ -9,14 +11,5 @@ module.exports = function(app, nconf, winston) {
   app.get('/', function(request, response) {
     response.render("index");
   });
-
-  /**
-   * Finds which URL to redirect to given a request.
-   */
-  function getRedirect(request) {
-    var redirect = request.query.redirect;
-    redirect = redirect || request.headers.referer;
-    return redirect || '/'; // default to home page
-  }
 
 };
