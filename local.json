@@ -1,5 +1,6 @@
 {
   "port" : 4100,
   "cookie_secret" : "change me now",
-  "session_secret" : "change moi"
+  "session_secret" : "change moi",
+  "google_analytics_code" : "gacodehere"
 }

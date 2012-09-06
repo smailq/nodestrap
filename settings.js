@@ -64,6 +64,11 @@ module.exports = function(app, express, nconf, winston) {
     // Use ./views/layout.html as the root of all views
     app.set('layout', 'global/layout');
 
+    // load default locals
+    app.set('locals', {
+      _GA_code : nconf.get('google_analytics_code')
+    });
+
     // Partials for layout
     app.set('partials', {
       "_google_analytics": "3rd_party/google_analytics",
@@ -125,10 +130,6 @@ module.exports = function(app, express, nconf, winston) {
     **/
     app.use(express.session( { secret: nconf.get('session_secret') }));
 
-    // Serve favicon
-    // @see http://www.senchalabs.org/connect/favicon.html
-    app.use(express.favicon());
-
     /**
       Setup stylus.
 
@@ -175,7 +176,7 @@ module.exports = function(app, express, nconf, winston) {
   // settings for production environment
   app.configure('production', function() {
 
-    // 404
+    // 404 pages
     app.use(utils.render404);
 
     // handle error
