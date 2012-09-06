@@ -1,5 +1,5 @@
 var stylus = require('stylus');
-
+var utils = require('./lib/utils');
 /**
  * @param app - the express application
  * @param express - the express library
@@ -8,6 +8,54 @@ var stylus = require('stylus');
  */
 module.exports = function(app, express, nconf, winston) {
 
+  // settings for development environment
+  app.configure('development', function() {
+
+    // log
+    app.use(express.logger({
+      format: 'dev'
+    }));
+
+  });
+
+  // settings for production environment
+  app.configure('production', function() {
+
+    // setup access logs
+    // @see https://github.com/flatiron/winston
+    winston.loggers.add('access', {
+      file: {
+        filename: './logs/access.log',
+        json: false,
+        maxsize: 67108864
+      }
+    });
+
+    var winston_access = winston.loggers.get('access');
+    winston_access.remove(winston.transports.Console);
+
+    // enable web server logging; pipe those log messages through winston
+    var winstonStream = {
+      write: function(message, encoding){
+          // get rid of newline char
+          winston_access.info(message.slice(0,-1));
+      }
+    };
+
+    /**
+      log
+    
+      For format syntax, see below
+      @see http://www.senchalabs.org/connect/logger.html
+    **/
+    app.use(express.logger({
+      format: ':remote-addr - - [:date] ":method :url HTTP/:http-version" :status :res[content-length] ":referrer" ":user-agent" :response-time',
+      stream: winstonStream
+    }));
+
+  });
+
+  // configure express
   app.configure(function(){
 
     // Set html as default extension
@@ -111,65 +159,24 @@ module.exports = function(app, express, nconf, winston) {
     // Try to process the request with routes defined in ./routes
     app.use(app.router);
 
-    // last handler; assume 404 at this point 
-    // app.use(utils.render404);
   });
 
+  // settings for development environment
   app.configure('development', function() {
-
-    // logger for dev
-    winston.loggers.add('access', {});
-
-    var winston_access = winston.loggers.get('access');
-    // enable web server logging; pipe those log messages through winston
-    var winstonStream = {
-      write: function(message, encoding){
-          // get rid of newline char
-          winston_access.info(message.slice(0,-1));
-      }
-    };
-
-    // log
-    app.use(express.logger({
-      format: 'dev',
-      immediate: true,
-      stream: winstonStream
-    }));
 
     // handle error
     app.use(express.errorHandler({
       dumpExceptions: true,
       showStack: true
     }));
+
   });
 
+  // settings for production environment
   app.configure('production', function() {
 
-    // setup access logs
-    winston.loggers.add('access', {
-      file: {
-        filename: './logs/access.log',
-        json: false,
-        maxsize: 67108864
-      }
-    });
-
-    var winston_access = winston.loggers.get('access');
-    winston_access.remove(winston.transports.Console);
-
-    // enable web server logging; pipe those log messages through winston
-    var winstonStream = {
-      write: function(message, encoding){
-          // get rid of newline char
-          winston_access.info(message.slice(0,-1));
-      }
-    };
-
-    // log
-    app.use(express.logger({
-      format: ':remote-addr - - [:date] ":method :url HTTP/:http-version" :status :res[content-length] ":referrer" ":user-agent" :response-time',
-      stream: winstonStream
-    }));
+    // 404
+    app.use(utils.render404);
 
     // handle error
     app.use(express.errorHandler());
