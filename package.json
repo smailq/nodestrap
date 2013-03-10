@@ -1,32 +1,34 @@
 {
   "name": "nodestrap",
   "description": "Skeleton project",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "author": "Kyu Lee <smailq@gmail.com>",
   "repository": {
     "type": "git",
     "url": "git@github.com:smailq/nodestrap.git"
   },
   "engines": {
-    "node": ">= 0.6.19",
-    "npm": ">= 1.1.x"
+    "node": ">= 0.8.0"
   },
   "dependencies": {
-    "express": "3.0.0rc3",
+    "express": "3.x.x",
+    "coffee-script": "1.x.x",
+    "connect-assets": "2.x.x",
+    "stylus": "0.x.x",
+    "jade": "0.x.x",
+    "underscore": "1.x.x",
+    "validator": "0.x.x",
     "nconf": "0.6.x",
-    "winston": "0.5.x",
-    "stylus": "0.27.2",
-    "underscore": "1.3.x",
-    "hogan-express": "0.3.2",
-    "validator": "0.4.x",
-    "mongoose": "3.1.1"
+    "winston": "0.6.x"
   },
   "devDependencies": {
     "mocha": "1.3.x",
     "should": "1.1.x"
   },
   "scripts" : {
-    "test": "make test"
+    "test": "mocha test",
+    "start": "coffee web.coffee"
   }
 }
+
 

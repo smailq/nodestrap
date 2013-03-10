@@ -1,4 +1,4 @@
 NodeStrap
 =========
 
-Starter code for nodejs projects
+Bootstrap + Node.js + Mongoose

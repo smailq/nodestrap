@@ -1,0 +1,5 @@
+{
+  "port" : 3636,
+  "cookieSecret" : "some long secret",
+  "logFile" : null
+}

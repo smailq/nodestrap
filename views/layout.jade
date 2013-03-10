@@ -1,0 +1,26 @@
+!!! html
+html
+  head  
+    title NodeStrap
+    // Global CSS
+    -if (env == 'production')
+      link(rel="stylesheet", href="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/2.3.1/css/bootstrap.min.css")
+    -else
+      link(rel="stylesheet", href="/static/libs/twitter-bootstrap/2.3.1/css/bootstrap.css")
+    != css('layout')
+    // Local CSS
+    block layout-css
+  body
+    div.container
+      // Local content
+      block content
+    // Global JS
+    -if (env == 'production')
+      script(src="//cdnjs.cloudflare.com/ajax/libs/jquery/1.9.1/jquery.min.js")
+      script(src="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/2.3.1/js/bootstrap.min.js")
+    - else
+      script(src="/static/libs/jquery/1.9.1/jquery.js")
+      script(src="/static/libs/twitter-bootstrap/2.3.1/js/bootstrap.js")
+    // Local JS
+    block layout-js
+ 

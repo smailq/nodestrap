@@ -2,7 +2,7 @@
 *.swp
 *.DS_Store
 
-public/assets/css/*.css
+
 
 lib-cov
 *.seed
